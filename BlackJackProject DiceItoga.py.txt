@@ -1,0 +1,239 @@
+from random import shuffle
+
+class Deck(object):
+    """
+    deck has 52 cards
+   
+    """
+    suit_type = ['Spade', 'Heart', 'Diamond', 'Clubs']
+    cardnumber = ['A','2','3','4','5','6','7','8','9','T','J','Q','K']
+    
+    card_num = []
+    suit_list = []
+
+    deck = {'card':card_num, 'suit':suit_list}
+    #print deck
+    picked_card = []
+    hand_value = 0
+    
+    def __init__(self):
+        print"Welcome To Black Jack"    #Since it is declared at the top, to access it in the init function, you have to address
+                           #as self.deck which will access te deck variable.
+    
+    def create_a_deck(self):
+       
+        for i in self.cardnumber:
+            for x in self.suit_type:
+                #print i 
+                #print x
+                self.card_num.append(i)
+                self.suit_list.append(x)
+              
+        #print self.card_num        
+        #print self.suit_list
+        #deck = {'card':card_num, 'suit':suit_list}
+        #print deck
+        #return card_num, suit_last
+        
+    
+    def draw_a_card(self):
+        #print self.deck
+        card_num = self.deck['card'].pop()
+        card_suit = self.deck['suit'].pop()
+       
+        picked_card =[card_num,card_suit]
+        print self.name + " has drawn: " + str(picked_card)
+        return picked_card
+
+    def shuffle_deck(self):
+        shuffle(self.suit_list)
+        shuffle(self.card_num)
+        self.deck = {'card':self.card_num, 'suit':self.suit_list}
+        #print "The deck is shuffled..." + str(self.deck)    #This is a very important test code to check the stack of cards
+        print "The deck is shuffled..." 
+        #print self.deck
+        return self.deck
+   
+        
+        
+#********************************************************************************************        
+class Player(Deck):
+    def __init__(self,name):
+        self.hand_value = 0
+        self.name = name
+        self.tally_value_list  = []
+        super(Deck,self).__init__()
+        
+    def test_name_function(self):
+        print "This is " + self.name + " as player!"
+        
+    def assign_value(self,picked_cards):
+        #print("Player is in assign_value() ")
+        self.picked_cards = picked_cards
+        #print ("This is the picked card:") + str(picked_cards)
+        ace_card = False
+        for i in self.picked_cards[0]:
+            #print("This is picked_card via pop():") + i[0]
+            #print(type(i[0]))     #works so far
+            if(i[0]=='T' or i[0]=='J' or i[0]=='Q' or i[0]=='K'):
+                #print("self.hand_value is:") + str(self.hand_value)
+                self.hand_value += 10
+                #print("self.hand_value is:") + str(self.hand_value)
+                return self.hand_value
+            elif(i[0]!='A'):
+                    #Take the string of a number and typecase it to integer, then add it to self.hand_value 
+                #print("self.hand_value is:") + str(self.hand_value)
+                self.hand_value +=(int(i[0]))
+                #print("self.hand_value is:") + str(self.hand_value)
+                return self.hand_value
+            else:
+                    #The value has to be 11 or 1 depending on the choice
+                ace_card =True
+            if(ace_card==True and self.hand_value<=10):
+                #print("self.hand_value is:") + str(self.hand_value)
+                self.hand_value +=11
+                #print("self.hand_value is:") + str(self.hand_value)
+                return self.hand_value
+            elif(ace_card==True and self.hand_value>10):
+                #print("self.hand_value is:") + str(self.hand_value)
+                self.hand_value +=1
+                #print("self.hand_value is:") + str(self.hand_value)
+                return self.hand_value
+        
+    def appending_list(self, card_value):
+        self.card_value = card_value
+        print "The value of the card for " + self.name +  " so far is: " + str(value_hand)
+        self.tally_value_list.append(self.card_value)
+        return (self.tally_value_list)
+        
+        
+    def tally_value(self, list_of_values):
+        self.list_of_values = list_of_values
+        list_total = 0
+        print("We are in tally_value and the list is: ")
+        #https://www.youtube.com/watch?v=JKiW4K4Dm0c
+        
+        for i in range(len(self.list_of_values)):
+            list_total += self.list_of_values[i]
+            #adds up all of the elements in the list to get the total value of a player's hand
+            return list_total
+        
+    def if_normal_player(self):
+        pass
+            
+
+    def if_dealer(self):
+        pass
+       
+            
+    def evaluate_hand_value(self):
+        if self.name == "dealer":
+            if int(max(self.tally_value_list)) <= 15:
+                return "hit"
+            elif int(max(self.tally_value_list)) > 21:
+                return "bust" 
+            else:
+                return "hold"
+        elif int(max(self.tally_value_list)) <= 12:
+                return "hit"
+        elif int(max(self.tally_value_list)) == 21:
+                print "Booom!!! Black Jack!"
+                return "hold"
+        elif int(max(self.tally_value_list)) > 21:
+                return "bust"
+        else:
+            return "hold"
+        
+             
+                
+#**********************************************************************************************              
+a = Deck()   #create a Deck document
+#a.suit_type
+a.create_a_deck()
+a.shuffle_deck() #shuffule the deck
+#a.draw_a_card()
+
+player1 = Player("player 1: Daisuke") #create a Cards object
+dealer = Player("dealer")
+
+print("*****************************************************")
+player1.test_name_function()
+#return_value = player1.draw_a_card()
+#print("This is is the return_value from draw_a_card():") + str(return_value)
+#The player (including dealer will be given at least 2 draws/cards so that is atomatic.)
+value_hand = player1.assign_value(player1.draw_a_card())
+player1.appending_list(value_hand)
+
+print("*****************************************************")
+dealer.test_name_function()
+
+value_hand = dealer.assign_value(dealer.draw_a_card())
+dealer.appending_list(value_hand)
+
+print("*****************************************************")
+
+value_hand = player1.assign_value(player1.draw_a_card())
+player1.appending_list(value_hand)
+
+print("*****************************************************")
+
+value_hand = dealer.assign_value(dealer.draw_a_card())
+dealer.appending_list(value_hand)
+
+
+#***************************Continue to Hit or Stay*****************************************************************
+
+print("*****************************************************")
+print "Daisuke's turn to Hit or Stay:"
+print ""
+while player1.evaluate_hand_value() == "hit":
+    print "Daisuke will hit at: " + str(player1.hand_value)
+    value_hand = player1.assign_value(player1.draw_a_card())
+    #print "A new card is drawn:" + str(value_hand)
+    player1.appending_list(value_hand)
+
+if player1.evaluate_hand_value() == "bust":
+    print player1.name + " busts!!"
+else:    
+    print player1.name + " stays at: " + str(player1.hand_value)
+
+print("*****************************************************")
+
+    
+    
+print "Dealer's turn to Hit or Stay:"
+print ""
+while dealer.evaluate_hand_value() == "hit": 
+    print "Dealer will hit at: " + str(dealer.hand_value)
+    value_hand = dealer.assign_value(dealer.draw_a_card())
+    #print "A new card is drawn:" + str(value_hand)
+    dealer.appending_list(value_hand)
+
+#Bust :-\   
+    
+if dealer.evaluate_hand_value() == "bust":
+    print "Dealer busts!!"
+else:
+    print "Dealer stays at: " + str(dealer.hand_value)
+print("*****************************************************")
+
+#**********************Look to see who won the hand? (Player/Dealer)******************************************************************
+
+print ""
+if player1.evaluate_hand_value() == "bust" and dealer.evaluate_hand_value() == "bust":
+    print "Both busted and no one wins..."
+elif player1.evaluate_hand_value() != "bust" and dealer.evaluate_hand_value() == "bust":
+    print player1.name + " Wins as Dealer busted!"
+elif player1.evaluate_hand_value() == "bust" and dealer.evaluate_hand_value() != "bust":
+    print "Dealer wins as player busted!"
+elif player1.hand_value > dealer.hand_value:
+    print player1.name + " at " + str(player1.hand_value) + " Vs. " + dealer.name + " at " + str(dealer.hand_value) + "..."
+    print player1.name + " wins the hand!"
+elif player1.hand_value < dealer.hand_value:
+    print player1.name + " at " + str(player1.hand_value) + " Vs. " + dealer.name + " at " + str(dealer.hand_value) + "..."
+    print dealer.name + " wins the hand"
+else: 
+    print "This hand is a push..."
+
+print ""
+print "**********************"
